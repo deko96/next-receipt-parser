@@ -1,0 +1,42 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Upload {
+    id       Int      @id @default(autoincrement())
+    filename String   @unique
+    receipt  Receipt?
+}
+
+model Category {
+    id    Int    @id @default(autoincrement())
+    name  String
+    items Item[]
+}
+
+model Receipt {
+    id        Int       @id @default(autoincrement())
+    merchant  String?
+    total     Int
+    date      DateTime?
+    items     Item[]
+    upload_id Int       @unique
+    upload    Upload    @relation(fields: [upload_id], references: [id], onDelete: Cascade)
+}
+
+model Item {
+    id           Int       @id @default(autoincrement())
+    description  String
+    quantity     Int       @default(1)
+    product_code String?
+    price        Decimal
+    receipt_id   Int
+    category_id  Int?
+    receipt      Receipt   @relation(fields: [receipt_id], references: [id], onDelete: Cascade)
+    category     Category? @relation(fields: [category_id], references: [id], onDelete: Cascade)
+}

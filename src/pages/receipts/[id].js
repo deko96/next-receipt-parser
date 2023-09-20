@@ -8,39 +8,12 @@ import {
   TableFooter,
   TableHead,
   TableRow,
-  colors,
 } from "@mui/material";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import api from "@/services/api";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-
-const COLORS = [
-  colors.blue[500],
-  colors.green[500],
-  colors.orange[500],
-  colors.purple[500],
-  colors.red[500],
-  colors.yellow[500],
-  colors.teal[500],
-  colors.pink[500],
-  colors.indigo[500],
-  colors.cyan[500],
-  colors.deepOrange[500],
-  colors.amber[500],
-  colors.lightBlue[500],
-  colors.lime[500],
-  colors.deepPurple[500],
-  colors.brown[500],
-  colors.grey[500],
-  colors.blueGrey[500],
-  colors.lightGreen[500],
-  colors.deepPurple[300], // Additional unique color
-  colors.blue[300], // Additional unique color
-  colors.green[300], // Additional unique color
-  colors.orange[300], // Additional unique color
-  colors.purple[300], // Additional unique color
-];
+import { COLORS } from "@/utils/chart-colors";
 
 const groupItemsByCategory = (data) => {
   const grouped = data.reduce((result, item) => {
@@ -59,7 +32,6 @@ const groupItemsByCategory = (data) => {
 
 export async function getServerSideProps({ params }) {
   const { data } = await api.get(`/receipts/${params.id}`);
-  console.log(data);
 
   return {
     props: {
@@ -90,7 +62,7 @@ export default function Receipt({ data }) {
               outerRadius={100}
               label
             >
-              {groupedData.map((entry, index) => (
+              {groupedData.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}

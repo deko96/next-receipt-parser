@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CircularProgress from "@mui/material/CircularProgress";
-import { colors } from "@mui/material";
 
-const FullScreenDragAndDropUploader = ({ onFileDrop }) => {
+const DragAndDropUploader = ({ onFileDrop }) => {
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -93,4 +92,4 @@ const FullScreenDragAndDropUploader = ({ onFileDrop }) => {
   );
 };
 
-export default FullScreenDragAndDropUploader;
+export default DragAndDropUploader;

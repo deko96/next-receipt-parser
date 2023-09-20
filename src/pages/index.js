@@ -1,8 +1,6 @@
-import DragAndDropUploader from "../components/FullScreenDragAndDropUploader/FullScreenDragAndDropUploader";
+import DragAndDropUploader from "../components/DragAndDropUploader";
 import { useRouter } from "next/router";
-import api from "@/services/api";
-import { useState } from "react";
-import { isAxiosError } from "axios";
+import api from "../services/api";
 
 export default function Home() {
   const router = useRouter();

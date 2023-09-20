@@ -10,10 +10,10 @@ import {
   TableRow,
 } from "@mui/material";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
-import api from "@/services/api";
+import api from "../../services/api";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import { COLORS } from "@/utils/chart-colors";
+import { COLORS } from "../../utils/chart-colors";
 
 const groupItemsByCategory = (data) => {
   const grouped = data.reduce((result, item) => {

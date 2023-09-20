@@ -5,7 +5,7 @@ import {
   AzureKeyCredential,
 } from "@azure/ai-form-recognizer";
 import { PrebuiltReceiptModel } from "../../../models/receipt";
-import { sleep } from "@/utils/sleep";
+import { sleep } from "../../../utils/sleep";
 
 const ALLOWED_MIMETYPES = ["image/png", "image/jpg", "image/jpeg"];
 const upload = multer({ storage: multer.memoryStorage() });

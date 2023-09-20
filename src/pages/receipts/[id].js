@@ -11,39 +11,9 @@ import {
   colors,
 } from "@mui/material";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
-
-const data = [
-  {
-    id: "item1",
-    name: "Toaletna",
-    category: "Food",
-    price: 15,
-  },
-  {
-    id: "item2",
-    name: "Coca Cola",
-    category: "Drinks",
-    price: 0.5,
-  },
-  {
-    id: "item3",
-    name: "Fanta",
-    category: "Drinks",
-    price: 10,
-  },
-  {
-    id: "item4",
-    name: "Sprite",
-    category: "Drinks",
-    price: 10,
-  },
-  {
-    id: "item5",
-    name: "Macbook Air Pro 2023",
-    category: "Electronics",
-    price: 1250,
-  },
-];
+import api from "@/services/api";
+import { useMemo } from "react";
+import dayjs from "dayjs";
 
 const COLORS = [
   colors.blue[500],
@@ -74,29 +44,43 @@ const COLORS = [
 
 const groupItemsByCategory = (data) => {
   const grouped = data.reduce((result, item) => {
-    if (!result[item.category]) {
-      result[item.category] = [];
-    }
-    result[item.category].push(item);
+    const category = item.category?.name || "Other";
+    if (!result[category]) result[category] = [];
+    result[category].push(item);
+
     return result;
   }, {});
+
   return Object.entries(grouped).map(([category, items]) => ({
     category,
     items,
   }));
 };
 
-const getTotalPrice = (data) => {
-  return data.reduce((total, item) => total + item.price, 0);
-};
+export async function getServerSideProps({ params }) {
+  const { data } = await api.get(`/receipts/${params.id}`);
+  console.log(data);
 
-export default function Receipt() {
-  const groupedData = groupItemsByCategory(data);
-  const total = getTotalPrice(data);
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+export default function Receipt({ data }) {
+  const groupedData = groupItemsByCategory(data.items);
+
+  const date = useMemo(() => {
+    return data.date ? dayjs(data.date).format("DD.MM.YYYY") : "N/A";
+  }, [data]);
 
   return (
-    <Container maxWidth="xl" style={{ display: "flex" }}>
-      <div style={{ flex: 3, marginRight: "16px" }}>
+    <Container
+      maxWidth="xl"
+      style={{ display: "flex", flexDirection: "column", gap: "50px" }}
+    >
+      <div>
         <ResponsiveContainer width="100%" height={400}>
           <PieChart>
             <Pie
@@ -118,36 +102,49 @@ export default function Receipt() {
         </ResponsiveContainer>
       </div>
 
-      <div
-        style={{
-          flex: 7,
-        }}
-      >
+      <div>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell colspan={4}>Merchant</TableCell>
+                <TableCell>{data.merchant || "Unknown"}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colspan={4}>Date</TableCell>
+                <TableCell>{date}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colspan={5} align="center">
+                  ITEMS
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell>Category</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Product Code</TableCell>
+                <TableCell>Quantity</TableCell>
                 <TableCell>Price</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((item) => (
+              {data.items?.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.category}</TableCell>
-                  <TableCell>${item.price}</TableCell>
+                  <TableCell>{item.category?.name || "Other"}</TableCell>
+                  <TableCell>{item.description}</TableCell>
+                  <TableCell>{item.product_code || "N/A"}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>${parseFloat(item.price).toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={2} align="right">
-                  <strong>Total:</strong>
+                <TableCell colSpan={4}>
+                  <strong>Total</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>${total}</strong>
+                  <strong>${data.total}</strong>
                 </TableCell>
               </TableRow>
             </TableFooter>

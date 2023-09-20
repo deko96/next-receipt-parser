@@ -25,7 +25,7 @@ export const config = {
 export default async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Only POST method is allowed for this endpoint",
+      message: "Only POST method is allowed for this endpoint",
     });
   }
 

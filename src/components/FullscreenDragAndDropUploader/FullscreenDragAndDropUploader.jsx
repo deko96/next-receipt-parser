@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CircularProgress from "@mui/material/CircularProgress";
+import { colors } from "@mui/material";
 
 const FullScreenDragAndDropUploader = ({ onFileDrop }) => {
   const [dragging, setDragging] = useState(false);
@@ -22,7 +23,6 @@ const FullScreenDragAndDropUploader = ({ onFileDrop }) => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setLoading(true);
-      // Simulate an asynchronous upload process (you can replace this with your actual upload logic)
       await onFileDrop(file);
       setLoading(false);
     }

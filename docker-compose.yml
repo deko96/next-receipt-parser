@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: bozinoski996/next-receipt-parser
     container_name: receipts-parser-app
     ports:
       - 3000:3000
@@ -26,6 +24,28 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - 5432:5432
+
+  migrations:
+    image: bozinoski996/next-receipt-parser
+    container_name: receipts-parser-migration-runner
+    restart: no
+    depends_on:
+      - app
+    environment:
+      ENTRYPOINT_MODE: migrations
+      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASS}@postgres:5432/${DATABASE_NAME}
+
+  studio:
+    image: bozinoski996/next-receipt-parser
+    container_name: receipts-parser-prisma-studio
+    restart: always
+    depends_on:
+      - app
+    ports:
+      - 5555:5555
+    environment:
+      ENTRYPOINT_MODE: studio
+      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASS}@postgres:5432/${DATABASE_NAME}
 
 volumes:
   postgres:

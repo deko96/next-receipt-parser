@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Check if ENTRYPOINT_MODE is set, default to "start" if not set
+MODE="${ENTRYPOINT_MODE:-start}"
+
+# Define mappings
+case "$MODE" in
+  "migrations")
+    # Execute npm script for migrations
+    npm run prisma:migrate
+    ;;
+  "studio")
+    # Execute npm script for Prisma Studio
+    npm run prisma:studio
+    ;;
+  *)
+    # Default: Execute npm script for starting the application
+    npm start
+    ;;
+esac
